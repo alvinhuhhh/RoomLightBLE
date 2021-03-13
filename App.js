@@ -8,6 +8,7 @@
 
 import React from 'react';
 import type {Node} from 'react';
+import {BleManager} from 'react-native-ble-plx';
 import {
   SafeAreaView,
   ScrollView,
@@ -28,14 +29,58 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const App: () => Node = () => {
+  var bluetoothDevice;
+  let bleService = '00000000-0000-0000-0000-00000cacce00';
+  let bleCharacteristic = '00000000-0000-0000-0000-00000000000a';
+
+  manager = new BleManager();
+
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  function dummyFunc() {
-    console.log('Pressed!');
+  async function scanAndConnect() {
+    console.log('Scanning...');
+    manager.startDeviceScan(null, null, (error, device) => {
+      console.log(device);
+      if (error) {
+        console.log(error);
+        return;
+      }
+      if (device.name === 'RoomLight') {
+        console.log('Device found!');
+        manager.stopDeviceScan();
+        bluetoothDevice = device;
+        device.connect()
+        .then((device) => {
+          return device.discoverAllServicesAndCharacteristics();
+        }).then(() => {
+          console.log('Device connected.');
+        }).catch((error) => {
+          console.log(error);
+        });
+      }
+    })
+  }
+
+  function stopScan() {
+    console.log('Stopping...');
+    manager.cancelDeviceConnection(bluetoothDevice.id)
+    .then(() => {
+      console.log('Disconnected.');
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
+  function switchOn() {
+    return;
+  }
+
+  function switchOff() {
+    return;
   }
 
   return (
@@ -49,8 +94,8 @@ const App: () => Node = () => {
           <Text style={styles.subtitle}>CONNECT</Text>
         </View>
         <View style={styles.buttonBox}>
-          <Button onPress={dummyFunc} title='Connect' color='#fca311'/>
-          <Button onPress={dummyFunc} title='Disconnect' color='#fca311'/>
+          <Button onPress={scanAndConnect} title='Connect' color='#fca311'/>
+          <Button onPress={stopScan} title='Disconnect' color='#fca311'/>
         </View>
       </View>
 
@@ -59,8 +104,8 @@ const App: () => Node = () => {
           <Text style={styles.subtitle}>SWITCH</Text>
         </View>
         <View style={styles.buttonBox}>
-          <Button onPress={dummyFunc} title='ON' color='#fca311'/>
-          <Button onPress={dummyFunc} title='OFF' color='#fca311'/>
+          <Button onPress={switchOn} title='ON' color='#fca311'/>
+          <Button onPress={switchOff} title='OFF' color='#fca311'/>
         </View>
       </View>
     </SafeAreaView>
