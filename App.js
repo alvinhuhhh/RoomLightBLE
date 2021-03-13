@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
 import type {Node} from 'react';
 import {BleManager} from 'react-native-ble-plx';
@@ -32,16 +24,10 @@ const App: () => Node = () => {
   var bluetoothDevice;
   let bleService = '00000000-0000-0000-0000-00000cacce00';
   let bleCharacteristic = '00000000-0000-0000-0000-00000000000a';
-  let valueOn = 'AQ==';
-  let valueOff = 'AA==';
+  let valueOn = 'AQ=='; // value of 1 in base64
+  let valueOff = 'AA=='; // value of 0 in base64
 
   manager = new BleManager();
-
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
 
   async function scanAndConnect() {
     console.log('Scanning...');
@@ -125,22 +111,6 @@ const App: () => Node = () => {
 };
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
   container: {
     flex: 100,
     backgroundColor: '#000',
