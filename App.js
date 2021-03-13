@@ -32,6 +32,8 @@ const App: () => Node = () => {
   var bluetoothDevice;
   let bleService = '00000000-0000-0000-0000-00000cacce00';
   let bleCharacteristic = '00000000-0000-0000-0000-00000000000a';
+  let valueOn = 'AQ==';
+  let valueOff = 'AA==';
 
   manager = new BleManager();
 
@@ -67,7 +69,7 @@ const App: () => Node = () => {
 
   function stopScan() {
     console.log('Stopping...');
-    manager.cancelDeviceConnection(bluetoothDevice.id)
+    bluetoothDevice.cancelConnection()
     .then(() => {
       console.log('Disconnected.');
     }).catch((error) => {
@@ -76,11 +78,21 @@ const App: () => Node = () => {
   }
 
   function switchOn() {
-    return;
+    bluetoothDevice.writeCharacteristicWithResponseForService(bleService, bleCharacteristic, valueOn)
+    .then((response) => {
+      console.log(response);
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
   function switchOff() {
-    return;
+    bluetoothDevice.writeCharacteristicWithResponseForService(bleService, bleCharacteristic, valueOff)
+    .then((response) => {
+      console.log(response);
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
   return (
